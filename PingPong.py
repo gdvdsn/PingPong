@@ -207,8 +207,10 @@ while True:
         pg.draw.rect(display_surf, gray_table, inner_edge_table)
         pg.draw.rect(display_surf, black_net, net)
 
-        blue_paddle_rect.update_display(ss_blue, blue_paddle)
-        red_paddle_rect.update_display(ss_red, red_paddle)
+        hb = blue_paddle_rect.get_rect()
+        hr = red_paddle_rect.get_rect()
+        blue_paddle_rect.update_display(display_surf, blue_paddle, hb)
+        red_paddle_rect.update_display(display_surf, red_paddle, hr)
 
     for event in pg.event.get():
         if event.type == QUIT:
@@ -263,5 +265,4 @@ while True:
 
                     if b11.collidepoint(event.pos):
                         screen = "g"
-
     pg.display.update()
