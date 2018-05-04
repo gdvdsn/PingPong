@@ -207,8 +207,8 @@ while True:
         pg.draw.rect(display_surf, gray_table, inner_edge_table)
         pg.draw.rect(display_surf, black_net, net)
 
-        blue_paddle_rect.update_display(display_surf, blue_paddle)
-        red_paddle_rect.update_display(display_surf, red_paddle)
+        blue_paddle_rect.update_display(ss_blue, blue_paddle)
+        red_paddle_rect.update_display(ss_red, red_paddle)
 
     for event in pg.event.get():
         if event.type == QUIT:

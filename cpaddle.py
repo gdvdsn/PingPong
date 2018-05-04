@@ -4,11 +4,13 @@ class paddle:
     def __init__(self, x, y, l, w):
         self.rx = x
         self.ry = y
-        self.rect = pg.Rect(self.rx, self.ry, l, w)
+        self.rrect = pg.Rect(self.rx, self.ry, l, w)
 
-    def update_display(self, win, img):
-        #print("update display")
-        win.blit(img, self.rect)
+    def get_rect(self):
+        return self.rrect
+
+    def update_display(self, color, img):
+        pg.draw.rect(img, color, self.rrect)
 
     def images(self):
         rpaddle = pg.image.load('red_paddle.png')
@@ -19,7 +21,6 @@ class paddle:
         return rpaddle, bpaddle
 
     def update_rect(self, event, note):
-        print("update_rect", self.rx, self.ry)
         ##UP FOR PADDLES
         if note == 'b':
             if event.key == pg.K_w and self.ry > 0:
