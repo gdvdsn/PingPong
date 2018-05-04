@@ -1,6 +1,6 @@
 import pygame as pg, sys, time, random
 from pygame.locals import *
-from cpaddle import paddle
+from cpaddle import *
 
 pg.init()
 

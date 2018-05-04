@@ -10,7 +10,7 @@ class paddle:
         return self.rrect
 
     def update_display(self, win, img, nrect):
-        win.blit(img, (nrect.x, nrect.y))
+        win.blit(img, (self.rrect.x, self.rrect.y))
 
     def images(self):
         rpaddle = pg.image.load('red_paddle.png')
