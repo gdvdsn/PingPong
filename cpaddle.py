@@ -1,6 +1,7 @@
 import pygame as pg
 
 class paddle:
+
     def __init__(self, x, y, l, w):
         self.rx = x
         self.ry = y

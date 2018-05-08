@@ -15,7 +15,7 @@ class meter():
         self.meter_up= 1
         self.meter_down = 1
 
-        self.x = 6
+        self.nx = 6
 
     def go_meter(self, display_surf):
         display_surf.fill(self.WHITE)
@@ -23,8 +23,8 @@ class meter():
         pg.draw.rect(display_surf, self.peach_background, self.meter_rect)
 
         if self.D_up == True and self.D_down == False:
-            self.meter_rect.h -= self.x
-            self.meter_up += self.x
+            self.meter_rect.h -= self.nx
+            self.meter_up += self.nx
 
             if self.meter_up > 498:
                 self.meter_up = 1
@@ -32,8 +32,8 @@ class meter():
                 self.D_down = True
 
         elif self.D_down == True and self.D_up == False:
-            self.meter_rect.h += self.x
-            self.meter_down += self.x
+            self.meter_rect.h += self.nx
+            self.meter_down += self.nx
 
             if self.meter_down > 498:
                 self.meter_down = 1

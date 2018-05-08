@@ -24,10 +24,13 @@ ss_red = (255, 180, 180)
 ss_blue = (180, 180, 255)
 
 ##Define Paddles
-red_paddle_rect = paddle(1285, 340, 15, 120)
-blue_paddle_rect = paddle(100, 340, 15, 120)
+red_paddle_rect = pg.Rect(1285, 340, 15, 120)
+blue_paddle_rect = pg.Rect(100, 340, 15, 120)
 
-red_paddle, blue_paddle = paddle.images(6)
+rpaddle = pg.image.load('red_paddle.png')
+rpaddle = pg.transform.scale(rpaddle, (15, 120))
+bpaddle = pg.image.load('blue_paddle.png')
+bpaddle = pg.transform.scale(bpaddle, (15, 120))
 
 ##Define board
 outer_edge_table = pg.Rect(70, 50, 1260, 700)
@@ -207,10 +210,10 @@ while True:
         pg.draw.rect(display_surf, gray_table, inner_edge_table)
         pg.draw.rect(display_surf, black_net, net)
 
-        hb = blue_paddle_rect.get_rect()
-        hr = red_paddle_rect.get_rect()
-        blue_paddle_rect.update_display(display_surf, blue_paddle, hb)
-        red_paddle_rect.update_display(display_surf, red_paddle, hr)
+        #pg.draw.rect(display_surf, ss_blue, blue_paddle_rect)
+        #pg.draw.rect(display_surf, ss_red, red_paddle_rect)
+        display_surf.blit(rpaddle, red_paddle_rect)
+        display_surf.blit(bpaddle, blue_paddle_rect)
 
     for event in pg.event.get():
         if event.type == QUIT:
@@ -224,8 +227,30 @@ while True:
                 if event.key == K_SPACE:
                     screen = "ps"
             if screen == "g":
-                blue_paddle_rect.update_rect(event, 'b')
-                red_paddle_rect.update_rect(event, 'r')
+            ##UP FOR PADDLES
+                if event.key == K_w and blue_paddle_rect.y > 0:
+                    blue_paddle_rect.y -= 6
+                if event.key == K_UP and red_paddle_rect.y > 0:
+                    red_paddle_rect.y -= 6
+
+            ##DOWN FOR PADDLES
+                if event.key == K_s and blue_paddle_rect.y + 120 < 800:
+                    blue_paddle_rect.y += 6
+                if event.key == K_DOWN and red_paddle_rect.y + 120 < 800:
+                    red_paddle_rect.y += 6
+
+            ##LEFT FOR PADDLES
+                if event.key == K_a and blue_paddle_rect.x > 0:
+                    blue_paddle_rect.x -= 6
+                if event.key == K_LEFT and red_paddle_rect.x > 703:
+                    red_paddle_rect.x -= 6
+
+            ##RIGHT FOR PADDLES
+                if event.key == K_d and blue_paddle_rect.x + 15 < 697:
+                    blue_paddle_rect.x += 6
+                if event.key == K_RIGHT and red_paddle_rect.y + 15 < 1400:
+                    red_paddle_rect.x += 6
+
 
         if event.type == pg.MOUSEBUTTONDOWN:
             print("Mouse button")
