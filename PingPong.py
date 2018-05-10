@@ -227,30 +227,32 @@ while True:
                 if event.key == K_SPACE:
                     screen = "ps"
             if screen == "g":
+                key_pressed = pg.key.get_pressed()
+
             ##UP FOR PADDLES
-                if event.key == K_w and blue_paddle_rect.y > 0:
+                if key_pressed[K_w] and blue_paddle_rect.y > 0:
                     blue_paddle_rect.y -= 6
-                if event.key == K_UP and red_paddle_rect.y > 0:
+                if key_pressed[K_UP] and red_paddle_rect.y > 0:
                     red_paddle_rect.y -= 6
 
             ##DOWN FOR PADDLES
-                if event.key == K_s and blue_paddle_rect.y + 120 < 800:
+                if key_pressed[K_s] and blue_paddle_rect.y + 120 < 800:
                     blue_paddle_rect.y += 6
-                if event.key == K_DOWN and red_paddle_rect.y + 120 < 800:
+                if key_pressed[K_DOWN] and red_paddle_rect.y + 120 < 800:
                     red_paddle_rect.y += 6
 
             ##LEFT FOR PADDLES
-                if event.key == K_a and blue_paddle_rect.x > 0:
+                if key_pressed[K_a] and blue_paddle_rect.x > 0:
                     blue_paddle_rect.x -= 6
-                if event.key == K_LEFT and red_paddle_rect.x > 703:
+                if key_pressed[K_LEFT] and red_paddle_rect.x > 703:
                     red_paddle_rect.x -= 6
 
             ##RIGHT FOR PADDLES
-                if event.key == K_d and blue_paddle_rect.x + 15 < 697:
+                if key_pressed[K_d] and blue_paddle_rect.x + 15 < 697:
                     blue_paddle_rect.x += 6
-                if event.key == K_RIGHT and red_paddle_rect.y + 15 < 1400:
+                if key_pressed[K_RIGHT] and red_paddle_rect.y + 15 < 1400:
                     red_paddle_rect.x += 6
-
+                pg.display.update()
 
         if event.type == pg.MOUSEBUTTONDOWN:
             print("Mouse button")
@@ -290,4 +292,4 @@ while True:
 
                     if b11.collidepoint(event.pos):
                         screen = "g"
-    pg.display.update()
+pg.display.update()
