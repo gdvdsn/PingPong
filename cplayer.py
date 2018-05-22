@@ -52,28 +52,27 @@ class player():
             elif self.dir == 270:
                 self.y += 2
         elif self.x + 30 >= 1400:
-            self.x -= 1
+            self.x -= 2
             self.dir = 2
         elif self.x - 5 <= 701:
-            self.x += 1
+            self.x += 2
             self.dir = 2
         elif self.y + 30 >= 800:
-            self.y -= 1
+            self.y -= 2
             self.dir = 2
         elif self.y - 5 <= 0:
-            self.y += 1
+            self.y += 2
             self.dir = 2
 
     def atwall(self):
-        print("AT WALL")
         if self.dir == 0:
-            self.x -= 1
+            self.x -= 5
         elif self.dir == 90:
-            self.y += 1
+            self.y += 5
         elif self.dir == 180:
-            self.x += 1
+            self.x += 5
         elif self.dir == 270:
-            self.y -= 1
+            self.y -= 5
 
         self.dir = 2
 

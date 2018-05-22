@@ -1,33 +1,204 @@
 import pygame as pg
+import random
 
 class maze():
     def __init__(self):
+
+        ##all lists for maze creation
         self.maze_rects = []
+        self.green_trects1 = []
+        self.green_trects2 = []
+        self.spawn_rects = []
+        self.orng_trects = []
+        self.switch_rects1 = []
+        self.switch_rects2 = []
 
+        ##create walls, fill lists
         self.walls()
+        self.transparentwalls()
+        self.botspawns()
+        self.switchspawns()
 
-    def drawall(self, ds, col, r, b, rr, br):
+        ##colors
+        self.black = (0, 0, 0)
+        self.grn = (65, 215, 55)
+        self.orng = (255, 102, 0)
+        self.gray = (200, 200, 200)
+        self.lightcyan = (200, 255, 255)
+
+        ##vars for switches
+        self.switch_num1 = 0
+        self.switch_num2 = 0
+
+        ##button rects
+        self.sscreen_b = pg.Rect(570, 280, 250, 90)
+
+    def sscreen(self, ds, r, b):
+        pg.draw.rect(ds, r, (0, 0, 800, 700))
+        pg.draw.rect(ds, b, (700, 0, 800, 700))
+        pg.draw.rect(ds, self.gray, self.sscreen_b)
+
+        self.font = pg.font.SysFont("Black Ops", 100)
+        self.start = self.font.render(("START"), True, (0, 0, 0))
+        ds.blit(self.start, (585, 295))
+
+    def checkbutton(self, screen, point):
+        if screen == "s":
+            if self.sscreen_b.collidepoint(point):
+                print("GOOD")
+                return True
+       # elif screen == "c":
+
+    def drawall(self, ds, r, b, rr, br):
         pg.draw.rect(ds, r, rr)
         pg.draw.rect(ds, b, br)
 
         for wall in self.maze_rects:
-            pg.draw.rect(ds, col, wall)
+            pg.draw.rect(ds, self.black, wall)
 
-    def checkwall(self, r1, r2, r3):
-        if r1.collidelist(self.maze_rects) == True:
+        for wall in self.green_trects1:
+            pg.draw.rect(ds, self.grn, wall)
+
+        for wall in self.green_trects2:
+            pg.draw.rect(ds, self.grn, wall)
+
+        for spawn in self.spawn_rects:
+            pg.draw.rect(ds, self.gray, spawn)
+
+        for twall in self.orng_trects:
+            pg.draw.rect(ds, self.orng, twall)
+
+    def checkwall(self, rect1, rect2, rect3):
+        if rect1.collidelist(self.maze_rects) != -1 or rect1.collidelist(self.orng_trects) != -1:
             return True
-        elif r2.collidelist(self.maze_rects) == True:
+        elif rect2.collidelist(self.maze_rects) != -1 or rect2.collidelist(self.orng_trects) != -1:
             return True
-        elif r3.collidelist(self.maze_rects) == True:
+        elif rect3.collidelist(self.maze_rects) != -1 or rect3.collidelist(self.orng_trects) != -1:
             return True
         else:
             return False
 
+    def switch_function(self, ds, player1, player2):
+        if len(self.green_trects2) > 0:
+
+            if len(self.green_trects2) > 0:
+                self.rand1 = random.randint(0, len(self.green_trects2) - 1)
+            else:
+                self.rand1 = 1
+
+            pg.draw.rect(ds, self.lightcyan, self.switch_rects1[self.switch_num1])
+
+            if (self.switch_rects1[self.switch_num1]).colliderect(player1):
+                self.orng_trects.append(self.green_trects2[self.rand1])
+                self.green_trects2.remove(self.green_trects2[self.rand1])
+
+                self.switch_num1 += 1
+
+                if self.switch_num1 > len(self.switch_rects1)- 1:
+                    self.switch_num1 = 0
+
+        if len(self.green_trects1) > 0:
+
+            if len(self.green_trects1) > 0:
+                self.rand2 = random.randint(0, len(self.green_trects1) - 1)
+            else:
+                self.rand2 = 1
+
+            pg.draw.rect(ds, self.lightcyan, self.switch_rects2[self.switch_num2])
+
+            if (self.switch_rects2[self.switch_num2]).colliderect(player2):
+                self.orng_trects.append(self.green_trects1[self.rand2])
+                self.green_trects1.remove(self.green_trects1[self.rand2])
+
+                self.switch_num2 += 1
+
+                if self.switch_num2 > len(self.switch_rects2) - 1:
+                    self.switch_num2 = 0
+
+    def switchspawns(self):
+        self.switch_rects1.append(pg.Rect(285, 140, 15, 15))
+        self.switch_rects1.append(pg.Rect(550, 195, 15, 15))
+        self.switch_rects1.append(pg.Rect(225, 615, 15, 15))
+        self.switch_rects1.append(pg.Rect(480, 630, 15, 15))
+
+        self.switch_rects2.append(pg.Rect(285 + 700, 140, 15, 15))
+        self.switch_rects2.append(pg.Rect(550 + 700, 195, 15, 15))
+        self.switch_rects2.append(pg.Rect(225 + 700, 615, 15, 15))
+        self.switch_rects2.append(pg.Rect(480 + 700, 630, 15, 15))
+
+    def botspawns(self):
+        self.bs1 = pg.Rect(25, 5, 35, 35)
+        self.spawn_rects.append(self.bs1)
+        self.bs2 = pg.Rect(625, 185, 35, 35)
+        self.spawn_rects.append(self.bs2)
+        self.bs3 = pg.Rect(600, 685, 35, 35)
+        self.spawn_rects.append(self.bs3)
+        self.bs4 = pg.Rect(150, 675, 35, 35)
+        self.spawn_rects.append(self.bs4)
+
+        self.bs5 = pg.Rect(25 + 700, 5, 35, 35)
+        self.spawn_rects.append(self.bs5)
+        self.bs6 = pg.Rect(625 + 700, 185, 35, 35)
+        self.spawn_rects.append(self.bs6)
+        self.bs7 = pg.Rect(600 + 700, 685, 35, 35)
+        self.spawn_rects.append(self.bs7)
+        self.bs8 = pg.Rect(150 + 700, 675, 35, 35)
+        self.spawn_rects.append(self.bs8)
+
+    def transparentwalls(self):
+        self.tr1 = pg.Rect(350, 190, 10, 55)
+        self.green_trects1.append(self.tr1)
+        self.tr2 = pg.Rect(240, 0, 10, 45)
+        self.green_trects1.append(self.tr2)
+        self.tr3 = pg.Rect(535, 45, 45, 10)
+        self.green_trects1.append(self.tr3)
+        self.tr4 = pg.Rect(410, 255, 10, 45)
+        self.green_trects1.append(self.tr4)
+        self.tr5 = pg.Rect(260, 390, 10, 50)
+        self.green_trects1.append(self.tr5)
+        self.tr6 = pg.Rect(475, 530, 10, 50)
+        self.green_trects1.append(self.tr6)
+        self.tr7 = pg.Rect(50, 590, 10, 40)
+        self.green_trects1.append(self.tr7)
+        self.tr8 = pg.Rect(120, 680, 10, 50)
+        self.green_trects1.append(self.tr8)
+        self.tr9 = pg.Rect(360, 670, 60, 10)
+        self.green_trects1.append(self.tr9)
+        self.tr10 = pg.Rect(1, 440, 49, 10)
+        self.green_trects1.append(self.tr10)
+
+        self.tr11 = pg.Rect(350 + 700, 190, 10, 55)
+        self.green_trects2.append(self.tr11)
+        self.tr12 = pg.Rect(240 + 700, 0, 10, 45)
+        self.green_trects2.append(self.tr12)
+        self.tr13 = pg.Rect(535 + 700, 45, 45, 10)
+        self.green_trects2.append(self.tr13)
+        self.tr14 = pg.Rect(410 + 700, 255, 10, 45)
+        self.green_trects2.append(self.tr14)
+        self.tr15 = pg.Rect(260 + 700, 390, 10, 50)
+        self.green_trects2.append(self.tr15)
+        self.tr16 = pg.Rect(475 + 700, 530, 10, 50)
+        self.green_trects2.append(self.tr16)
+        self.tr17 = pg.Rect(50 + 700, 590, 10, 40)
+        self.green_trects2.append(self.tr17)
+        self.tr18 = pg.Rect(120 + 700, 680, 10, 50)
+        self.green_trects2.append(self.tr18)
+        self.tr19 = pg.Rect(360 + 700, 670, 60, 10)
+        self.green_trects2.append(self.tr19)
+        self.tr20 = pg.Rect(1 + 700, 440, 49, 10)
+        self.green_trects2.append(self.tr20)
+
     def walls(self):
+        self.topwall = pg.Rect(0, 0, 1400, 1)
+        self.rightwall = pg.Rect(1400, 0, 1, 800)
+        self.botwall = pg.Rect(0, 800, 1400, 1)
+        self.leftwall = pg.Rect(0, 0, 1, 800)
+        self.midwall = pg.Rect(700, 0, 1, 800)
+
         self.r1 = pg.Rect(45, 45, 10, 55)
         self.r2 = pg.Rect(100, 45, 140, 10)
         self.r3 = pg.Rect(45, 100, 150, 10)
-        self.r4 = pg.Rect(240, 45, 10, 110)
+        self.r4 = pg.Rect(240, 45, 10, 90)
         self.r5 = pg.Rect(250, 100, 45, 10)
         self.r6 = pg.Rect(295, 45, 55, 10)
         self.r7 = pg.Rect(350, 45, 10, 145)
@@ -47,8 +218,8 @@ class maze():
         self.r21 = pg.Rect(535, 155, 110, 10)
         ###
         self.r22 = pg.Rect(0, 245, 105, 10)
-        self.r23 = pg.Rect(155, 245, 200, 10)
-        self.r24 = pg.Rect(405, 245, 90, 10)
+        self.r23 = pg.Rect(160, 245, 200, 10)
+        self.r24 = pg.Rect(410, 245, 85, 10)
         self.r25 = pg.Rect(555, 245, 145, 10)
         ###
         self.r26 = pg.Rect(50, 300, 90, 10)
@@ -86,13 +257,13 @@ class maze():
         self.r57 = pg.Rect(620, 440, 10, 90)
         
         self.r58 = pg.Rect(610, 300, 10, 90)
-        self.r59 = pg.Rect(610, 340, 90, 10)
-        self.r60 = pg.Rect(45, 440, 10, 90)
-        self.r61 = pg.Rect(0, 480, 45, 10)
+        self.r59 = pg.Rect(610, 300, 90, 10)
+        self.r60 = pg.Rect(50, 440, 10, 90)
+        self.r61 = pg.Rect(0, 520, 50, 10)
         ###
-        self.r62 = pg.Rect(0, 580, 75, 10)
-        self.r63 = pg.Rect(135, 580, 350, 10)
-        self.r64 = pg.Rect(545, 580, 155, 10)
+        self.r62 = pg.Rect(0, 580, 60, 10)
+        self.r63 = pg.Rect(120, 580, 365, 10)
+        self.r64 = pg.Rect(540, 580, 160, 10)
         ###
         self.r65 = pg.Rect(50, 630, 70, 10)
         self.r66 = pg.Rect(120, 630, 10, 50)
@@ -102,11 +273,11 @@ class maze():
         self.r70 = pg.Rect(200, 655, 90, 10)
         self.r71 = pg.Rect(240, 725, 10, 75)
         self.r72 = pg.Rect(300, 725, 50, 10)
-        self.r73 = pg.Rect(350, 660, 10, 75)
+        self.r73 = pg.Rect(350, 635, 10, 100)
         self.r74 = pg.Rect(420, 580, 10, 100)
         self.r75 = pg.Rect(565, 650, 10, 90)
-        self.r76 = pg.Rect(420, 730, 90, 10)
-        self.r77 = pg.Rect(500, 680, 10, 120)
+        self.r76 = pg.Rect(420, 730, 75, 10)
+        self.r77 = pg.Rect(485, 680, 10, 120)
         self.r78 = pg.Rect(565, 650, 90, 10)
         
         self.maze_rects.append(self.r1)
@@ -216,8 +387,8 @@ class maze():
         self.r99 = pg.Rect(535 + 700, 155, 110, 10)
         ###
         self.r100 = pg.Rect(0 + 700, 245, 105, 10)
-        self.r101 = pg.Rect(155 + 700, 245, 200, 10)
-        self.r102 = pg.Rect(405 + 700, 245, 90, 10)
+        self.r101 = pg.Rect(160 + 700, 245, 200, 10)
+        self.r102 = pg.Rect(410 + 700, 245, 85, 10)
         self.r103 = pg.Rect(555 + 700, 245, 145, 10)
         ###
         self.r104 = pg.Rect(50 + 700, 300, 90, 10)
@@ -255,13 +426,13 @@ class maze():
         self.r135 = pg.Rect(620 + 700, 440, 10, 90)
 
         self.r136 = pg.Rect(610 + 700, 300, 10, 90)
-        self.r137 = pg.Rect(610 + 700, 340, 90, 10)
-        self.r138 = pg.Rect(45 + 700, 440, 10, 90)
-        self.r139 = pg.Rect(0 + 700, 480, 45, 10)
+        self.r137 = pg.Rect(610 + 700, 300, 90, 10)
+        self.r138 = pg.Rect(50 + 700, 440, 10, 90)
+        self.r139 = pg.Rect(0 + 700, 520, 50, 10)
         ###
-        self.r140 = pg.Rect(0 + 700, 580, 75, 10)
-        self.r141 = pg.Rect(135 + 700, 580, 350, 10)
-        self.r142 = pg.Rect(545 + 700, 580, 155, 10)
+        self.r140 = pg.Rect(0 + 700, 580, 60, 10)
+        self.r141 = pg.Rect(120 + 700, 580, 365, 10)
+        self.r142 = pg.Rect(540 + 700, 580, 160, 10)
         ###
         self.r143 = pg.Rect(50 + 700, 630, 70, 10)
         self.r144 = pg.Rect(120 + 700, 630, 10, 50)
@@ -271,11 +442,11 @@ class maze():
         self.r148 = pg.Rect(200 + 700, 655, 90, 10)
         self.r149 = pg.Rect(240 + 700, 725, 10, 75)
         self.r150 = pg.Rect(300 + 700, 725, 50, 10)
-        self.r151 = pg.Rect(350 + 700, 660, 10, 75)
+        self.r151 = pg.Rect(350 + 700, 635, 10, 100)
         self.r152 = pg.Rect(420 + 700, 580, 10, 100)
         self.r153 = pg.Rect(565 + 700, 650, 10, 90)
-        self.r154 = pg.Rect(420 + 700, 730, 90, 10)
-        self.r155 = pg.Rect(500 + 700, 680, 10, 120)
+        self.r154 = pg.Rect(420 + 700, 730, 75, 10)
+        self.r155 = pg.Rect(485 + 700, 680, 10, 120)
         self.r156 = pg.Rect(565 + 700, 650, 90, 10)
 
         self.maze_rects.append(self.r79)
@@ -359,3 +530,9 @@ class maze():
         self.maze_rects.append(self.r154)
         self.maze_rects.append(self.r155)
         self.maze_rects.append(self.r156)
+
+        self.maze_rects.append(self.topwall)
+        self.maze_rects.append(self.rightwall)
+        self.maze_rects.append(self.leftwall)
+        self.maze_rects.append(self.botwall)
+        self.maze_rects.append(self.midwall)
