@@ -63,8 +63,8 @@ def main():
             p2.drawp(ds, blu)
 
             ##check players movements
-            p1.checkmove1()
-            p2.checkmove2()
+            p1.checkborder1()
+            p2.checkborder2()
 
             #check player/wall positions
             if map.checkwall(p1.getrects()[0], p1.getrects()[1], p1.getrects()[2]):

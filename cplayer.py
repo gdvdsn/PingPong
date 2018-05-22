@@ -18,7 +18,7 @@ class player():
         pg.draw.rect(ds, col, self.r2)
         pg.draw.rect(ds, col, self.r3)
 
-    def checkmove1(self):
+    def checkborder1(self):
         if self.x + 30 < 700 and self.x - 5 > 0 and self.y + 30 < 800 and self.y - 5 > 0:
             if self.dir == 0:
                 self.x += 2
@@ -41,7 +41,7 @@ class player():
             self.y += 1
             self.dir = 2
 
-    def checkmove2(self):
+    def checkborder2(self):
         if self.x + 30 < 1400 and self.x - 5 > 701 and self.y + 30 < 800 and self.y - 5 > 0:
             if self.dir == 0:
                 self.x += 2
@@ -99,4 +99,4 @@ class player():
         if event == pg.K_DOWN:
             self.dir = 270
 
-    def bounce(self):
+    #def bounce(self):
