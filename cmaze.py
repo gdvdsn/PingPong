@@ -1,5 +1,7 @@
 import pygame as pg
 import random
+from cbot import *
+
 
 class maze():
     def __init__(self):
@@ -30,24 +32,83 @@ class maze():
         self.switch_num1 = 0
         self.switch_num2 = 0
 
-        ##button rects
+        ##button
+        self.font = pg.font.SysFont("Black Ops", 100)
         self.sscreen_b = pg.Rect(570, 280, 250, 90)
+        self.escreen_b = pg.Rect(600, 420, 200, 90)
 
-    def sscreen(self, ds, r, b):
-        pg.draw.rect(ds, r, (0, 0, 800, 700))
-        pg.draw.rect(ds, b, (700, 0, 800, 700))
+        ##model rects
+        self.x, self.y = 700, 300
+        self.rr1 = pg.Rect(self.x - 150, self.y, 25, 25)
+        self.rr2 = pg.Rect(self.x - 155, self.y+5, 35, 15)
+        self.rr3 = pg.Rect(self.x - 145, self.y-5, 15, 35)
+
+        self.br1 = pg.Rect(self.x + 150, self.y, 25, 25)
+        self.br2 = pg.Rect(self.x + 145, self.y+5, 35, 15)
+        self.br3 = pg.Rect(self.x + 155, self.y-5, 15, 35)
+
+        ##bot spawn
+        self.bot_list = []
+        self.bot_list.append(botplayer(30, 7.5))
+        self.bot_list.append(botplayer(30 + 700, 7.5))
+
+        self.bot_spawn_timer = 0
+        self.bot_spawn = 1
+
+    def sscreen(self, ds, r, b, rr, bb):
+        pg.draw.rect(ds, r, rr)
+        pg.draw.rect(ds, b, bb)
         pg.draw.rect(ds, self.gray, self.sscreen_b)
 
-        self.font = pg.font.SysFont("Black Ops", 100)
         self.start = self.font.render(("START"), True, (0, 0, 0))
         ds.blit(self.start, (585, 295))
 
-    def checkbutton(self, screen, point):
+    def cpscreen(self, ds, r, b):
+        pg.draw.rect(ds, r, (0, 0, 800, 700))
+        pg.draw.rect(ds, b, (700, 0, 800, 700))
+
+        self.chooseplayer = self.font.render(("CHOOSE PLAYER"), True, (0, 0, 0))
+        ds.blit(self.chooseplayer, (450, 150))
+
+        pg.draw.rect(ds, (255, 0, 0), self.rr1)
+        pg.draw.rect(ds, (255, 0, 0), self.rr2)
+        pg.draw.rect(ds, (255, 0, 0), self.rr3)
+
+        pg.draw.rect(ds, (0, 0, 255), self.br1)
+        pg.draw.rect(ds, (0, 0, 255), self.br2)
+        pg.draw.rect(ds, (0, 0, 255), self.br3)
+
+    def escreen(self, ds, r, b, rr, bb, winner):
+        pg.draw.rect(ds, r, rr)
+        pg.draw.rect(ds, b, bb)
+        pg.draw.rect(ds, self.gray, self.escreen_b)
+
+        self.textSurfaceObj_1 = self.font.render(("WHO KNOWS"), True, self.black)
+
+        if winner == "r":
+            self.textSurfaceObj_1 = self.font.render(("RED WINS"), True, self.black)
+        elif winner == "b":
+            self.textSurfaceObj_1 = self.font.render(("BLU WINS"), True, self.black)
+
+        self.textSurfaceObj_2 = self.font.render(("EXIT"), True, self.black)
+        self.textRectObj_2 = self.textSurfaceObj_2.get_rect()
+        self.textRectObj_2.center = (700, 465)
+
+        self.textRectObj_1 = self.textSurfaceObj_1.get_rect()
+        self.textRectObj_1.center = (700, 225)
+
+        ds.blit(self.textSurfaceObj_1, self.textRectObj_1)
+        ds.blit(self.textSurfaceObj_2, self.textRectObj_2)
+
+    def checkbuttons(self, screen, point):
         if screen == "s":
             if self.sscreen_b.collidepoint(point):
-                print("GOOD")
                 return True
-       # elif screen == "c":
+        #elif screen == "c":
+
+        elif screen == "e":
+            if self.escreen_b.collidepoint(point):
+                return True
 
     def drawall(self, ds, r, b, rr, br):
         pg.draw.rect(ds, r, rr)
@@ -68,6 +129,13 @@ class maze():
         for twall in self.orng_trects:
             pg.draw.rect(ds, self.orng, twall)
 
+        for b in self.bot_list:
+            b.drawb(ds)
+            b.move(self.checkwall(b.getrects(), b.getrects(), b.getrects()))
+
+    def get_bot_list(self):
+        return self.bot_list
+
     def checkwall(self, rect1, rect2, rect3):
         if rect1.collidelist(self.maze_rects) != -1 or rect1.collidelist(self.orng_trects) != -1:
             return True
@@ -77,6 +145,22 @@ class maze():
             return True
         else:
             return False
+
+    def botspawn_function(self):
+        self.place1 = [((27.5), (7.5)), ((627.5), (187.5)), ((602.5), (687.5)), ((152.5), (677.5))]
+        self.place2 = [((27.5 + 700), (7.5)), ((627.5 + 700), (187.5)), ((602.5 + 700), (687.5)), ((152.5 + 700), (677.5))]
+
+        if self.bot_spawn_timer > 650:
+            self.bot_list.append(botplayer(self.place1[self.bot_spawn][0], self.place1[self.bot_spawn][1]))
+            self.bot_list.append(botplayer(self.place2[self.bot_spawn][0], self.place2[self.bot_spawn][1]))
+
+            self.bot_spawn += 1
+            self.bot_spawn_timer = 0
+        else:
+            self.bot_spawn_timer += 1
+
+        if self.bot_spawn > 3:
+            self.bot_spawn = 0
 
     def switch_function(self, ds, player1, player2):
         if len(self.green_trects2) > 0:

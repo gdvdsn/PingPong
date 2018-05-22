@@ -22,18 +22,6 @@ def switch_creation(switch):
 
     return b, switch
 
-def bot_creation(time, spawn):
-    place1 = [((27.5), (7.5)), ((627.5), (187.5)), ((602.5), (687.5)), ((152.5), (677.5))]
-    place2 = [((27.5 + 700), (7.5)), ((627.5 + 700), (187.5)), ((602.5 + 700), (687.5)), ((152.5 + 700), (677.5))]
-
-    if time > 650:
-        bot_list.append(botplayer(place1[spawn][0], place1[spawn][1]))
-        bot_list.append(botplayer(place2[spawn][0], place2[spawn][1]))
-
-        return spawn + 1, 0
-
-    return spawn, time
-
 def main():
     map = maze()
 
@@ -58,18 +46,13 @@ def main():
     p2 = player(730, 195)
 
     #bot rects (and use)
-    global bot_list
-
-    bot_list = []
-    bot_list.append(botplayer(30, 7.5))
-    bot_list.append(botplayer(30 + 700, 7.5))
-
-    bot_spawn_timer = 0
-    bot_spawn = 1
 
     while True:
         if screen == "s":
-            screen = map.sscreen(ds, b_red, b_blu)
+            map.sscreen(ds, b_red, b_blu, r_back, b_back)
+
+        elif screen == "c":
+            map.cpscreen(ds, b_red, b_blu)
 
         elif screen == "g":
             #draw map
@@ -90,45 +73,43 @@ def main():
             if map.checkwall(p2.getrects()[0], p2.getrects()[1], p2.getrects()[2]):
                 p2.atwall()
 
-            ##bot functions
-            for b in bot_list:
-                #draw bot(s)
-                b.drawb(ds)
+            #check bot/player positions
+            for b in map.get_bot_list():
+                winner = b.checkred([p1.getrects(), p2.getrects()])
+                if winner == False:
+                    winner = b.checkblu([p1.getrects(), p2.getrects()])
 
-                #check player/wall positions
-                b.move(map.checkwall(b.getrects(), b.getrects(), b.getrects()))
+                if isinstance(winner, str):
+                    screen = "e"
+                    break
 
-                #check bot/player positions
-                collision = b.checkplayer([p1.getrects(), p2.getrects()])
-
-            #create new bots
-            bot_spawn_timer += 1
-
-            bot_spawn, bot_spawn_timer = bot_creation(bot_spawn_timer, bot_spawn)
-
-            if bot_spawn > 3:
-                bot_spawn = 0
+            #bot function
+            map.botspawn_function()
 
             #transparent walls
             map.switch_function(ds, p1.getrects()[0], p2.getrects()[0])
 
-            if collision:
-                screen = "e"
+        elif screen == "e":
+            map.escreen(ds, b_red, b_blu, r_back, b_back, winner)
 
-            for event in pg.event.get():
-                if event.type == QUIT:
-                    pg.quit()
-                    sys.exit()
+        for event in pg.event.get():
+            if event.type == QUIT:
+                pg.quit()
+                sys.exit()
 
-                if event.type == pg.MOUSEBUTTONDOWN:
-                    if event.button == 1:
-                        if screen == "s":
-                            if map.checkbutton("s", event.pos):
-                                screen = "g"
+            if event.type == pg.MOUSEBUTTONDOWN:
+                if event.button == 1:
+                    if screen == "s":
+                        if map.checkbuttons(screen, event.pos):
+                            screen = "g"
+                    elif screen == "e":
+                        if map.checkbuttons(screen, event.pos):
+                            pg.quit()
+                            sys.exit()
 
-                if event.type == KEYDOWN:
-                    p1.turn1(event.key)
-                    p2.turn2(event.key)
+            if event.type == KEYDOWN:
+                p1.turn1(event.key)
+                p2.turn2(event.key)
 
         pg.display.update()
 

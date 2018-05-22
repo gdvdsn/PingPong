@@ -77,7 +77,7 @@ class player():
         self.dir = 2
 
     def getrects(self):
-        return self.r1, self.r2, self.r3
+        return [self.r1, self.r2, self.r3]
 
     def turn1(self, event):
         if event == pg.K_d:
@@ -98,3 +98,5 @@ class player():
             self.dir = 180
         if event == pg.K_DOWN:
             self.dir = 270
+
+    def bounce(self):

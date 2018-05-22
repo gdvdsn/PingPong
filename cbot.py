@@ -6,8 +6,6 @@ class botplayer():
     def __init__(self, nx, ny):
         self.x, self.y = nx, ny
 
-        self.map = maze()
-
         self.dir = 0
 
         self.gray = (100, 100, 100)
@@ -60,10 +58,16 @@ class botplayer():
 
         return self.dirs[self.ndir]
 
-    def checkplayer(self, players):
-        for p1 in players:
-            for p2 in p1:
-                if self.r.colliderect(p2):
-                    return True
-                else:
-                    return False
+    def checkred(self, players):
+        for a in players[0]:
+            if self.r.colliderect(a):
+                return "b"
+            else:
+                return False
+
+    def checkblu(self, players):
+        for c in players[1]:
+            if self.r.colliderect(c):
+                return "r"
+            else:
+                return False
